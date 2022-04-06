@@ -51,10 +51,10 @@ static void MX_GPIO_Init(void);
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 void zeros (uint32_t * vector, uint32_t longitud);
-void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
-uint16_t vectorIn[]={2,3,4};
-uint16_t vectorOut[];
-uint16_t escalar;
+void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar);
+uint32_t vectorIn[]={2,3,4};
+uint32_t vectorOut[];
+uint32_t escalar;
 uint32_t vector[];
 uint32_t longitud;
 /* USER CODE BEGIN PFP */
@@ -129,12 +129,12 @@ void zeros (uint32_t * vector, uint32_t longitud)
 
 }
 
-void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar)
+void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar)
 
 {
 	  for(uint32_t i=0; i<longitud; i++)
 	   {
-		  vectorOut[i]=vectorIn[i]*escalar;
+		  *(vectorOut+i) = (*(vectorIn+i))*escalar;
 
 	   }
 
@@ -174,7 +174,7 @@ int main(void)
 
   const uint32_t Resultado = asm_sum (5, 3);
  // zeros (vector,4);
-  productoEscalar16 (vectorIn,vectorOut,3,2);
+  productoEscalar32 (vectorIn,vectorOut,3,2);
   /* USER CODE END 2 */
 
   /* Infinite loop */

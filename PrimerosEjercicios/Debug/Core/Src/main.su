@@ -1,6 +1,6 @@
 ../Core/Src/main.c:66:13:PrivilegiosSVC	40	static,ignoring_inline_asm
 ../Core/Src/main.c:122:6:zeros	24	static
-../Core/Src/main.c:132:6:productoEscalar16	32	static
+../Core/Src/main.c:132:6:productoEscalar32	32	static
 ../Core/Src/main.c:148:5:main	16	static
 ../Core/Src/main.c:195:6:SystemClock_Config	88	static
 ../Core/Src/main.c:237:13:MX_GPIO_Init	16	static
