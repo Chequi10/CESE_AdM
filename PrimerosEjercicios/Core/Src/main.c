@@ -54,11 +54,14 @@ void zeros (uint32_t * vector, uint32_t longitud);
 void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar);
 void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
 void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
-uint32_t vectorIn[]={2,3,4};
-uint32_t vectorOut[];
-uint32_t escalar;
-uint32_t vector[];
+uint32_t vector[4];
+uint32_t vectorIn[]={0,1,2,3};
+uint32_t vectorOut[4];
 uint32_t longitud;
+uint16_t vectorIn16[]={0,1,2,3};
+uint16_t vectorOut16[4];
+uint16_t vectorOut12[4];
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -146,22 +149,23 @@ void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t long
 {
 	  for(uint32_t i=0; i<longitud; i++)
 	   {
-		  vectorOut[i]=vectorIn[i]*escalar;
+		  vectorOut16[i]=vectorIn[i]*escalar;
 
 	   }
 
 }
 
-void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar){
+void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar)
+{
 
 	for(uint32_t i=0 ; i < longitud ; i++)
 
 	{
-		vectorOut[i] = vectorIn[i]*escalar;
+		vectorOut12[i] = vectorIn[i]*escalar;
 
-		     if(vectorOut[i] > 4095)
+		     if(vectorOut12[i] >= 4095)
 	         	{
-	        		vectorOut[i] = 4095;
+	        		vectorOut12[i] = 4095;
 	        	}
 
 	}
@@ -204,16 +208,16 @@ int main(void)
 
   const uint32_t Resultado = asm_sum (5, 3);
   zeros (vector,4);
-  productoEscalar32 (vectorIn,vectorOut,3,2);
-  productoEscalar16 (vectorIn,vectorOut,3,2);
-  productoEscalar12 (vectorIn,vectorOut,3,2);
+  productoEscalar32 (vectorIn,vectorOut,4,3);
+  productoEscalar16 (vectorIn16,vectorOut16,4,5);
+  productoEscalar12 (vectorIn16,vectorOut12,4,1400);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
+    /* USER CODE END WHILE
 
     /* USER CODE BEGIN 3 */
   }
