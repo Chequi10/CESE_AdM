@@ -19,6 +19,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "string.h"
+#include<stdint.h>
+#include<stdio.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -50,16 +52,22 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+
 void zeros (uint32_t * vector, uint32_t longitud);
 void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar);
 void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
 void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
+
 uint32_t vector[4];
-uint32_t vectorIn[]={0,1,2,3};
-uint32_t vectorOut[4];
 uint32_t longitud;
+
+uint32_t vectorIn[]={0,1,2,3};
+uint32_t vectorOut32[4];
+
+
 uint16_t vectorIn16[]={0,1,2,3};
 uint16_t vectorOut16[4];
+
 uint16_t vectorOut12[4];
 
 /* USER CODE BEGIN PFP */
@@ -149,7 +157,7 @@ void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t long
 {
 	  for(uint32_t i=0; i<longitud; i++)
 	   {
-		  vectorOut16[i]=vectorIn[i]*escalar;
+		  vectorOut[i]=vectorIn[i]*escalar;
 
 	   }
 
@@ -161,11 +169,11 @@ void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t long
 	for(uint32_t i=0 ; i < longitud ; i++)
 
 	{
-		vectorOut12[i] = vectorIn[i]*escalar;
+		vectorOut[i] = vectorIn[i]*escalar;
 
-		     if(vectorOut12[i] >= 4095)
+		     if(vectorOut[i] >= 4095)
 	         	{
-	        		vectorOut12[i] = 4095;
+	        		vectorOut[i] = 4095;
 	        	}
 
 	}
@@ -208,7 +216,7 @@ int main(void)
 
   const uint32_t Resultado = asm_sum (5, 3);
   zeros (vector,4);
-  productoEscalar32 (vectorIn,vectorOut,4,3);
+  productoEscalar32 (vectorIn,vectorOut32,4,3);
   productoEscalar16 (vectorIn16,vectorOut16,4,5);
   productoEscalar12 (vectorIn16,vectorOut12,4,1400);
   /* USER CODE END 2 */
@@ -217,7 +225,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE
+    /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
