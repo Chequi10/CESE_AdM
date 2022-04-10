@@ -214,12 +214,12 @@ int main(void)
   /* USER CODE BEGIN 2 */
   PrivilegiosSVC ();
 
-  const uint32_t Resultado = asm_sum (5, 3);
+ // const uint32_t Resultado = asm_sum (5, 3);
 
   asm_zeros(vector,4);
   asm_productoEscalar32 (vectorIn,vectorOut32,4,4);
   asm_productoEscalar16 (vectorIn16,vectorOut16,4,5);
- // asm_productoEscalar12 (vectorIn16,vectorOut12,4,1400);
+  asm_productoEscalar12 (vectorIn16,vectorOut12,4,1400);
  // zeros (vector,4);
  // productoEscalar32 (vectorIn,vectorOut32,4,3);
  // productoEscalar16 (vectorIn16,vectorOut16,4,5);
