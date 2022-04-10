@@ -6,6 +6,7 @@
 .global asm_svc
 .global asm_sum
 .global asm_zeros
+.global asm_productoEscalar32
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
@@ -68,5 +69,31 @@
         @ bx lr
         @ push {lr} ... pop {pc}
 
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@  void asm_productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar);
+@
+@ Parametros recibidos:
+@   r0: puntero al vector entrada
+@   r1: puntero al vector salida
+@   r2: longitud de los vectores
+@   r3: escalar
+
+.thumb_func
+    asm_productoEscalar32:
+
+    .asm_productoEscalar32_for:
+        ldr r6, [r0], 4
+        mul r5, r6,r3
+        str r5, [r1], 4
+        subs r2, 1
+        bne .asm_productoEscalar32_for
+        bx lr
+
+        @ Otras alternativas para el retorno
+        @ mov pc,lr
+        @ bx lr
+        @ push {lr} ... pop {pc}
 
 

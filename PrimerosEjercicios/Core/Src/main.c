@@ -54,7 +54,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 
 void zeros (uint32_t * vector, uint32_t longitud);
-//void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar);
+void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t longitud, uint32_t escalar);
 //void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
 //void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
 
@@ -215,8 +215,10 @@ int main(void)
   PrivilegiosSVC ();
 
   const uint32_t Resultado = asm_sum (5, 3);
-  //zeros (vector,4);
-  asm_zeros(vector,4);
+
+  //asm_zeros(vector,4);
+  asm_productoEscalar32 (vectorIn,vectorOut32,4,3);
+ // zeros (vector,4);
  // productoEscalar32 (vectorIn,vectorOut32,4,3);
  // productoEscalar16 (vectorIn16,vectorOut16,4,5);
  // productoEscalar12 (vectorIn16,vectorOut12,4,1400);
