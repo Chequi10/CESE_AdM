@@ -144,8 +144,12 @@
     asm_productoEscalar12:
 
     .asm_productoEscalar12_for:
+
         ldr r6, [r0], 4
         mul r5, r6,r3
+        bvc .asm_over_for
+        mov r5, 100
+     .asm_over_for:
         str r5, [r1], 4
         subs r2, 1
         bne .asm_productoEscalar12_for
