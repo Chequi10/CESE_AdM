@@ -85,12 +85,12 @@
 .thumb_func
     asm_productoEscalar32:
 
-    .asm_productoEscalar32_for:
+    .asm_productoEscalar32_bucle:
         ldr r6, [r0], 4
         mul r5, r6,r3
         str r5, [r1], 4
         subs r2, 1
-        bne .asm_productoEscalar32_for
+        bne .asm_productoEscalar32_bucle
         bx lr
 
         @ Otras alternativas para el retorno
@@ -114,12 +114,12 @@
 .thumb_func
     asm_productoEscalar16:
 
-    .asm_productoEscalar16_for:
+    .asm_productoEscalar16_bucle:
         ldr r6, [r0], 4
-        mul r5, r6,r3
+        mul r5, r6, r3
         str r5, [r1], 4
         subs r2, 1
-        bne .asm_productoEscalar16_for
+        bne .asm_productoEscalar16_bucle
         bx lr
 
         @ Otras alternativas para el retorno
@@ -143,17 +143,16 @@
 .thumb_func
     asm_productoEscalar12:
 
-    .asm_productoEscalar12_for:
+        mov r6, 4095
+    .asm_productoEscalar12_bucle:
+    	ldrh r4, [r0], 2
+      	mul r5, r4, r3
+    	and r5, r5, r6
+    	str r5, [r1], 2
+    	subs r2, 1
+    	bne .asm_productoEscalar12_bucle
+      	bx lr
 
-        ldr r6, [r0], 4
-        mul r5, r6,r3
-        bvc .asm_over_for
-        mov r5, 100
-     .asm_over_for:
-        str r5, [r1], 4
-        subs r2, 1
-        bne .asm_productoEscalar12_for
-        bx lr
 
         @ Otras alternativas para el retorno
         @ mov pc,lr

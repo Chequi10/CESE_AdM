@@ -125,7 +125,7 @@ Disassembly of section .text:
 .thumb_func
     asm_productoEscalar32:
 
-    .asm_productoEscalar32_for:
+    .asm_productoEscalar32_bucle:
         ldr r6, [r0], 4
  8000202:	f850 6b04 	ldr.w	r6, [r0], #4
         mul r5, r6,r3
@@ -134,7 +134,7 @@ Disassembly of section .text:
  800020a:	f841 5b04 	str.w	r5, [r1], #4
         subs r2, 1
  800020e:	3a01      	subs	r2, #1
-        bne .asm_productoEscalar32_for
+        bne .asm_productoEscalar32_bucle
  8000210:	d1f7      	bne.n	8000202 <asm_productoEscalar32>
         bx lr
  8000212:	4770      	bx	lr
@@ -144,46 +144,45 @@ Disassembly of section .text:
 .thumb_func
     asm_productoEscalar16:
 
-    .asm_productoEscalar16_for:
+    .asm_productoEscalar16_bucle:
         ldr r6, [r0], 4
  8000214:	f850 6b04 	ldr.w	r6, [r0], #4
-        mul r5, r6,r3
+        mul r5, r6, r3
  8000218:	fb06 f503 	mul.w	r5, r6, r3
         str r5, [r1], 4
  800021c:	f841 5b04 	str.w	r5, [r1], #4
         subs r2, 1
  8000220:	3a01      	subs	r2, #1
-        bne .asm_productoEscalar16_for
+        bne .asm_productoEscalar16_bucle
  8000222:	d1f7      	bne.n	8000214 <asm_productoEscalar16>
         bx lr
  8000224:	4770      	bx	lr
 
 08000226 <asm_productoEscalar12>:
+@   r3: escalar
+
 .thumb_func
     asm_productoEscalar12:
 
-    .asm_productoEscalar12_for:
+        mov r6, 4095
+ 8000226:	f640 76ff 	movw	r6, #4095	; 0xfff
 
-        ldr r6, [r0], 4
- 8000226:	f850 6b04 	ldr.w	r6, [r0], #4
-        mul r5, r6,r3
- 800022a:	fb06 f503 	mul.w	r5, r6, r3
-        bvc .asm_over_for
- 800022e:	d701      	bvc.n	8000234 <.asm_over_for>
-        mov r5, 100
- 8000230:	f04f 0564 	mov.w	r5, #100	; 0x64
-
-08000234 <.asm_over_for>:
-     .asm_over_for:
-        str r5, [r1], 4
- 8000234:	f841 5b04 	str.w	r5, [r1], #4
-        subs r2, 1
- 8000238:	3a01      	subs	r2, #1
-        bne .asm_productoEscalar12_for
- 800023a:	d1f4      	bne.n	8000226 <asm_productoEscalar12>
-        bx lr
- 800023c:	4770      	bx	lr
-	...
+0800022a <.asm_productoEscalar12_bucle>:
+    .asm_productoEscalar12_bucle:
+    	ldrh r4, [r0], 2
+ 800022a:	f830 4b02 	ldrh.w	r4, [r0], #2
+      	mul r5, r4, r3
+ 800022e:	fb04 f503 	mul.w	r5, r4, r3
+    	and r5, r5, r6
+ 8000232:	ea05 0506 	and.w	r5, r5, r6
+    	str r5, [r1], 2
+ 8000236:	f841 5b02 	str.w	r5, [r1], #2
+    	subs r2, 1
+ 800023a:	3a01      	subs	r2, #1
+    	bne .asm_productoEscalar12_bucle
+ 800023c:	d1f5      	bne.n	800022a <.asm_productoEscalar12_bucle>
+      	bx lr
+ 800023e:	4770      	bx	lr
 
 08000240 <__aeabi_uldivmod>:
  8000240:	b953      	cbnz	r3, 8000258 <__aeabi_uldivmod+0x18>
