@@ -84,13 +84,14 @@
 
 .thumb_func
     asm_productoEscalar32:
-
+        push {r5,r6}
     .asm_productoEscalar32_bucle:
         ldr r6, [r0], 4
         mul r5, r6,r3
         str r5, [r1], 4
         subs r2, 1
         bne .asm_productoEscalar32_bucle
+        pop {r5,r6}
         bx lr
 
         @ Otras alternativas para el retorno
@@ -113,13 +114,14 @@
 
 .thumb_func
     asm_productoEscalar16:
-
+        push {r5,r6}
     .asm_productoEscalar16_bucle:
-        ldr r6, [r0], 4
+        ldr r6, [r0], 2
         mul r5, r6, r3
-        str r5, [r1], 4
+        str r5, [r1], 2
         subs r2, 1
         bne .asm_productoEscalar16_bucle
+        pop {r5,r6}
         bx lr
 
         @ Otras alternativas para el retorno
@@ -142,7 +144,7 @@
 
 .thumb_func
     asm_productoEscalar12:
-
+        push {r4,r6}
         mov r6, 4095
     .asm_productoEscalar12_bucle:
     	ldrh r4, [r0], 2
@@ -151,6 +153,7 @@
     	str r5, [r1], 2
     	subs r2, 1
     	bne .asm_productoEscalar12_bucle
+      	pop {r4,r6}
       	bx lr
 
 
