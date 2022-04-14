@@ -59,10 +59,10 @@ void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t long
 void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
 
 void filtroVentana10 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
-//void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
-//int32_t max (int32_t * vectorIn, uint32_t longitud);
-//void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N);
-//void invertir (uint16_t * vector, uint32_t longitud);
+void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
+int32_t max (int32_t * vectorIn, uint32_t longitud);
+void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N);
+void invertir (uint16_t * vector, uint32_t longitud);
 
 
 
@@ -223,6 +223,20 @@ void filtroVentana10 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longit
 
 }
 
+void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud)
+{
+	uint32_t a;
+
+	for(a=0 ; a<longitud ; a++)
+		{
+			vectorOut[a] = (uint16_t)(vectorIn[a]>>16);
+
+		}
+
+}
+
+
+
 
 /* USER CODE END 0 */
 
@@ -268,9 +282,9 @@ int main(void)
  // productoEscalar16 (vectorIn16,vectorOut16,4,5);
  // productoEscalar12 (vectorIn16,vectorOut12,4,1400);
 
-
-
 //filtroVentana10 (vector2In16, vector2Out16, 10);
+pack32to16 (vector2In16, vector2Out16, 10);
+
 
 
 
