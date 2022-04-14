@@ -58,6 +58,14 @@ void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t long
 void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
 void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
 
+void filtroVentana10 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
+//void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
+//int32_t max (int32_t * vectorIn, uint32_t longitud);
+//void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N);
+//void invertir (uint16_t * vector, uint32_t longitud);
+
+
+
 uint32_t vector[4];
 uint32_t longitud;
 
@@ -69,6 +77,9 @@ uint16_t vectorIn16[]={0,1,2,3};
 uint16_t vectorOut16[4];
 
 uint16_t vectorOut12[4];
+
+uint16_t vector2In16[]={0,1,2,3,4,5,6,7,8,9};
+uint16_t vector2Out16[10]={0};
 
 /* USER CODE BEGIN PFP */
 
@@ -181,6 +192,38 @@ void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t long
 }
 
 
+
+void filtroVentana10 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn)
+{
+
+	uint8_t ancho = 10;
+	uint32_t i;
+	uint32_t a;
+
+	for(i=0;i<longitudVectorIn;i++)
+		{
+
+			for(a=0;a<ancho;a++)
+				{
+
+				if((i+a)<longitudVectorIn)
+					{
+						vectorOut[i] = vectorIn[i+a];
+					}
+				else
+					{
+						vectorOut[i] = vectorIn[(i+a)-longitudVectorIn];
+					}
+
+				}
+
+					vectorOut[i]=vectorOut[i]/ancho;
+
+		}
+
+}
+
+
 /* USER CODE END 0 */
 
 /**
@@ -216,14 +259,21 @@ int main(void)
 
  // const uint32_t Resultado = asm_sum (5, 3);
 
-  asm_zeros(vector,4);
-  asm_productoEscalar32 (vectorIn,vectorOut32,4,4);
-  asm_productoEscalar16 (vectorIn16,vectorOut16,4,5);
-  asm_productoEscalar12 (vectorIn16,vectorOut12,4,1400);
+//  asm_zeros(vector,4);
+//  asm_productoEscalar32 (vectorIn,vectorOut32,4,4);
+//  asm_productoEscalar16 (vectorIn16,vectorOut16,4,5);
+//  asm_productoEscalar12 (vectorIn16,vectorOut12,4,1400);
  // zeros (vector,4);
  // productoEscalar32 (vectorIn,vectorOut32,4,3);
  // productoEscalar16 (vectorIn16,vectorOut16,4,5);
  // productoEscalar12 (vectorIn16,vectorOut12,4,1400);
+
+
+
+//filtroVentana10 (vector2In16, vector2Out16, 10);
+
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
