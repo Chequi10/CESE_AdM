@@ -9,6 +9,11 @@
 .global asm_productoEscalar32
 .global asm_productoEscalar16
 .global asm_productoEscalar12
+.global asm_invertir
+.global asm_max
+.global asm_pack32to16
+.global asm_filtroVentana10
+.global asm_downsampleM
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
@@ -161,3 +166,121 @@
         @ mov pc,lr
         @ bx lr
         @ push {lr} ... pop {pc}
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@ void asm_invertir (uint16_t * vector, uint32_t longitud);
+@
+@ Parametros recibidos:
+@   r0: Primer operando - vector de entrada de int16_t
+@   r1: Segundo operando - longitud del vector
+@
+@ Valor de retorno:
+@   void
+
+.thumb_func
+    asm_invertir:
+
+		/* Hago un push de los registro de r4 a r5 */
+		push {r4,r5}
+		/* Muevo al registro r4 el valor del registro r1=longitud del vector  */
+		mov r4, r1
+		subs r4, 1 // voy restando hasta llegar a recorrer el vector
+		mov r3,2
+		mul r4, r3  // Al ser uint16_t multiplico x 2
+		/* Apunto el R2 al final del vector */
+		mov r2, r0
+		add r2, r4
+		/* Le resto 2 a la cantidad de combinaciones a iterar
+		 * Para 3 elementos: 1 iteracion
+		 * Para 4 elementos: 2 iteraciones
+		 * Para N elementos: N - 2 iteraciones
+		 */
+		subs r1, 8
+
+	.asm_invertir_loop:
+		ldrh r4, [r2]	// Copio el valor del extremo derecho del vector
+		ldrh r5, [r0]	// Copio el valor del extremo izquierdo del vector
+		/* Intercambio valores entre las puntas */
+		strh r5, [r2],-2
+		strh r4, [r0], 2
+
+		subs r1, 1	// Cuando llega a cero cambia el flag a 1
+		bne .asm_invertir_loop
+
+		pop {r4,r5}
+
+ 		bx lr
+
+
+
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+
+@ int32_t asm_max(int32_t * vectorIn, uint32_t longitud);
+@
+@ Parametros recibidos:
+@   r0: vector de uint32_t
+@   r1: vector de uint32_t
+@   r2: valor maximo
+@   r3: para recorrer el vector
+@   r4: posicion donde esta el maximo valor
+
+.thumb_func
+    asm_max:
+
+		/* Hago un push de los registro de r4 */
+		push {r4}
+		mov r4, 0
+		ldr r2, [r0], 4
+		subs R1, 1
+	.asm_max_loop:
+		ldr r3, [r0], 4
+		cmp r3, r2
+		bhi .asm_max_update
+		b .asm_max_sigo
+
+	/* salvo la posicion y el maximo valor */
+	.asm_max_update:
+		add r4, 1
+		mov r2, r3
+
+	/* Hago la diferencia para poder saber si ya recorrio el vectro */
+	.asm_max_sigo:
+		subs r1, 1
+		bne .asm_max_loop
+
+	/* Copio la posicion del maximo al registro de salida */
+		mov r0,r4
+
+		pop {r4}
+
+        bx lr
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@
+@ void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
+@
+@ Parametros recibidos:
+@   r0: vector de entrada de int32_t
+@   r1: vector de salida de int16_t
+@   r2: longitud del vector
+@
+
+.thumb_func
+    asm_pack32to16:
+
+		ldr r3, [r0], 4	//Salvo e incremento el puntero.
+		lsr r3, R3, 16	//Hago corrimiento a la derecha 16 bits
+		str r3, [r1], 4
+
+ 		bx lr
+
