@@ -278,9 +278,7 @@
 .thumb_func
     asm_pack32to16:
 
-		ldr r3, [r0], 4	//Salvo e incremento el puntero.
-		lsr r3, R3, 16	//Hago corrimiento a la derecha 16 bits
-		str r3, [r1], 4
-
- 		bx lr
-
+	ldr r3, [r0], 4	//Salvo e incremento el puntero.
+	lsr r3, R3, 16	//Hago corrimiento a la derecha 16 bits
+	str r3, [r1], 2
+	bx lr
