@@ -81,6 +81,12 @@ uint16_t vectorOut12[4];
 uint16_t vector2In16[]={0,1,2,3,4,5,6,7,8,9};
 uint16_t vector2Out16[10]={0};
 
+int32_t vectorIn32Int[]={0,1,2,3};
+int32_t vectorOut32Int[4]={0};
+int16_t vectorOut16Int[4]={0};
+
+uint32_t vectorInMax[]={0,1,2,30,4,5,60,7,8,9};
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -197,31 +203,19 @@ void filtroVentana10 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longit
 {
 
 	uint8_t ancho = 10;
-	uint32_t i;
-	uint32_t a;
+	uint32_t i=0;
+	uint32_t a=0;
 
-	for(i=0;i<longitudVectorIn;i++)
+		for(i = 0; (i + ancho) <= longitudVectorIn; i++)
 		{
-
-			for(a=0;a<ancho;a++)
-				{
-
-				if((i+a)<longitudVectorIn)
-					{
-						vectorOut[i] = vectorIn[i+a];
-					}
-				else
-					{
-						vectorOut[i] = vectorIn[(i+a)-longitudVectorIn];
-					}
-
-				}
-
-					vectorOut[i]=vectorOut[i]/ancho;
-
+			for(a = i; a < (ancho + i); a++)
+			{
+				vectorOut[i] += vectorIn[a];
+			}
+			vectorOut[i] /= ancho;
 		}
-
 }
+
 
 void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud)
 {
@@ -229,13 +223,73 @@ void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud)
 
 	for(a=0 ; a<longitud ; a++)
 		{
-			vectorOut[a] = (uint16_t)(vectorIn[a]>>16);
+			vectorOut[a] = vectorIn[a]>>16;
 
 		}
 
 }
 
 
+int32_t max (int32_t * vectorIn, uint32_t longitud)
+{
+
+	int32_t posicion = 0;
+	uint32_t a;
+
+	for(a=0 ; a<longitud ; a++)
+	{
+
+		if(vectorIn[a] > vectorIn[posicion])
+			{
+				posicion = a;
+			}
+
+	}
+	return posicion;
+
+}
+
+
+void downsampleM(int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N)
+{
+	uint32_t Temporal = 0;
+	uint32_t indice = 0;
+	uint32_t a=0;
+
+	for(a = 0; a < longitud; a++){
+
+		if(Temporal != N)
+			{
+				vectorOut[indice] = vectorIn[a];
+				indice++;
+				Temporal++;
+			}
+			else
+			{
+				vectorIn[a] = vectorIn[a];
+				Temporal = 0;
+			}
+	}
+}
+
+
+
+void invertir (uint16_t * vector, uint32_t longitud)
+{
+	uint16_t temporal=0;
+	uint32_t posicionleft = 0;
+	uint32_t posicionright = longitud-1;
+
+	while(posicionleft < posicionright)
+		{
+			temporal=vector[posicionleft];
+			vector[posicionleft]=vector[posicionright];
+			vector[posicionright]=temporal;
+			posicionleft++;
+			posicionright--;
+		}
+
+}
 
 
 /* USER CODE END 0 */
@@ -271,21 +325,26 @@ int main(void)
   /* USER CODE BEGIN 2 */
   PrivilegiosSVC ();
 
- // const uint32_t Resultado = asm_sum (5, 3);
-
+// const uint32_t Resultado = asm_sum (5, 3);
+         //  DWT->CTRL |=1 << DWT_CTRL_CYCCNTENA_Pos;
 //  asm_zeros(vector,4);
 //  asm_productoEscalar32 (vectorIn,vectorOut32,4,4);
 //  asm_productoEscalar16 (vectorIn16,vectorOut16,4,5);
 //  asm_productoEscalar12 (vectorIn16,vectorOut12,4,1400);
+         //   DWT->CYCCNT =0;
  // zeros (vector,4);
- // productoEscalar32 (vectorIn,vectorOut32,4,3);
- // productoEscalar16 (vectorIn16,vectorOut16,4,5);
- // productoEscalar12 (vectorIn16,vectorOut12,4,1400);
+         //  uint32_t volatile c=DWT->CYCCNT;
+// productoEscalar32 (vectorIn,vectorOut32,4,3);
+// productoEscalar16 (vectorIn16,vectorOut16,4,5);
+// productoEscalar12 (vectorIn16,vectorOut12,4,1400);
 
+
+
+invertir(vector2In16, 10);
+//int32_t b = max (vectorInMax, 9);
+//pack32to16 (vectorIn32Int, vectorOut16Int, 4);
 //filtroVentana10 (vector2In16, vector2Out16, 10);
-pack32to16 (vector2In16, vector2Out16, 10);
-
-
+//downsampleM (vectorIn32Int,vectorOut32Int,4, 2);
 
 
   /* USER CODE END 2 */
