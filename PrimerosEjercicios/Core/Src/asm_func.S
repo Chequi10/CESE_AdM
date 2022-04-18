@@ -222,7 +222,7 @@
 		push {r4}        /* hago un push del registro r4*/
 		mov r4, 9
 		cmp	r2, r4
-		bls .asm_fin     /* Si no lo es termina la funcion */
+		bls .asm_fin     /* Finaliza o no la funcion */
 		push {r5,r6}
 		mov r6, 0        /* pongo a cero los registros r5, r6 */
 		mov r4, 0
@@ -233,15 +233,15 @@
 		add r4, r3
         subs r5, 1	// Cuando llega a cero cambia el flag a 1
 		bne .asm_filtroVentana10_loop2
-		add r6, 1    // sume un ciclo de 10 items mas
-		mov r5, 10   // Restaruro el valor de 10 para dividir
-		udiv r4,r4,r5 // Hago la division
-		strh r4,[r1], 2 // guardo el resultado en el vector de salida
-		add r5, r6 /* Me fijo si puedo correr la ventana una unidad hacia la izquierda */
-		cmp	r5, r2  		// Comparo la longitud con 10 + 1 elemento
-		bls .asm_volver_r0  // Si tengo un elemento mas itero nuevamente, pero primero vuelvo el puntero R0 a el item 2
-		b .asm_fin			// Si no tengo otro, termino la funcion
-	.asm_volver_r0: /* Vuelvo el puntero R0 a R0[1], asi sumo a partir del R0[1] hasta  R0[11], y asi hasta la longitud del vector */
+		add r6, 1
+		mov r5, 10
+		udiv r4,r4,r5 //division
+		strh r4,[r1], 2
+		add r5, r6
+		cmp	r5, r2
+		bls .asm_volver_r0
+		b .asm_fin
+	.asm_volver_r0:
 		sub r0, 20
 		b .asm_filtroVentana10_loop1
 	.asm_fin:

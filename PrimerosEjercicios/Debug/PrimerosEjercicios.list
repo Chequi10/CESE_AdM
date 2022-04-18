@@ -256,7 +256,7 @@ Disassembly of section .text:
  8000276:	f04f 0409 	mov.w	r4, #9
 		cmp	r2, r4
  800027a:	42a2      	cmp	r2, r4
-		bls .asm_fin     /* Si no lo es termina la funcion */
+		bls .asm_fin     /* Finaliza o no la funcion */
  800027c:	d91a      	bls.n	80002b4 <.asm_fin>
 		push {r5,r6}
  800027e:	b460      	push	{r5, r6}
@@ -280,25 +280,25 @@ Disassembly of section .text:
  8000292:	3d01      	subs	r5, #1
 		bne .asm_filtroVentana10_loop2
  8000294:	d1fa      	bne.n	800028c <.asm_filtroVentana10_loop2>
-		add r6, 1    // sume un ciclo de 10 items mas
+		add r6, 1
  8000296:	f106 0601 	add.w	r6, r6, #1
-		mov r5, 10   // Restaruro el valor de 10 para dividir
+		mov r5, 10
  800029a:	f04f 050a 	mov.w	r5, #10
-		udiv r4,r4,r5 // Hago la division
+		udiv r4,r4,r5 //division
  800029e:	fbb4 f4f5 	udiv	r4, r4, r5
-		strh r4,[r1], 2 // guardo el resultado en el vector de salida
+		strh r4,[r1], 2
  80002a2:	f821 4b02 	strh.w	r4, [r1], #2
-		add r5, r6 /* Me fijo si puedo correr la ventana una unidad hacia la izquierda */
+		add r5, r6
  80002a6:	4435      	add	r5, r6
-		cmp	r5, r2  		// Comparo la longitud con 10 + 1 elemento
+		cmp	r5, r2
  80002a8:	4295      	cmp	r5, r2
-		bls .asm_volver_r0  // Si tengo un elemento mas itero nuevamente, pero primero vuelvo el puntero R0 a el item 2
+		bls .asm_volver_r0
  80002aa:	d900      	bls.n	80002ae <.asm_volver_r0>
-		b .asm_fin			// Si no tengo otro, termino la funcion
+		b .asm_fin
  80002ac:	e002      	b.n	80002b4 <.asm_fin>
 
 080002ae <.asm_volver_r0>:
-	.asm_volver_r0: /* Vuelvo el puntero R0 a R0[1], asi sumo a partir del R0[1] hasta  R0[11], y asi hasta la longitud del vector */
+	.asm_volver_r0:
 		sub r0, 20
  80002ae:	f1a0 0014 	sub.w	r0, r0, #20
 		b .asm_filtroVentana10_loop1
