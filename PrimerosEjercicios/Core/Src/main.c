@@ -331,9 +331,9 @@ int main(void)
 //  asm_productoEscalar32 (vectorIn,vectorOut32,4,4);
 //  asm_productoEscalar16 (vectorIn16,vectorOut16,4,5);
 //  asm_productoEscalar12 (vectorIn16,vectorOut12,4,1400);
-//  asm_invertir(vector2In16, 10);
+  asm_invertir(vector2In16, 10);
 //  asm_max (vectorInMax, 10);
-  asm_pack32to16 (vectorIn32Int, vectorOut16Int, 4);
+//  asm_pack32to16 (vectorIn32Int, vectorOut16Int, 4);
 //  asm_filtroVentana10 (vector2In16, vector2Out16, 10);
 //  asm_downsampleM (vectorIn32Int,vectorOut32Int,4, 2);
 

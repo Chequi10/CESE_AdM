@@ -175,33 +175,29 @@
 @ void asm_invertir (uint16_t * vector, uint32_t longitud);
 @
 @ Parametros recibidos:
-@   r0: Primer operando - vector de entrada de int16_t
-@   r1: Segundo operando - longitud del vector
+@   r0: vector de entrada
+@   r1: longitud del vector
 @
 @ Valor de retorno:
 @   void
 
 .thumb_func
-    asm_invertir:
+	asm_invertir:
 
-		/* Hago un push de los registro de r4 a r5 */
-		push {r4,r5}
-		mov r4, r1
-		subs r4, 1 // voy restando hasta llegar a recorrer el vector
-		mov r3,2
-		mul r4, r3
-		mov r2, r0
-		add r2, r4
-		subs r1, 8
-	.asm_invertir_loop:
-		ldrh r4, [r2]
-		ldrh r5, [r0]
-		strh r5, [r2],-2
-		strh r4, [r0], 2
-		subs r1, 1	// voy restando hasta llegar a recorrer el vector
-		bne .asm_invertir_loop
-		pop {r4,r5}
- 		bx lr
+		    push {r4,r5}
+		    mov r2, 2
+		    mul r1, r2
+		    sub r1, 2
+		    add r1, r1 , r0
+		.itero_invertir:
+			ldrh r4, [r0]
+			ldrh r5, [r1]
+			strh r5, [r0], 2
+			strh r4, [r1], -2
+			cmp r1, r0
+			bcs .itero_invertir
+		    pop {r4,r5}
+		    bx lr
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
