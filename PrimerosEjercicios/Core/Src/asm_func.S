@@ -15,6 +15,7 @@
 .global asm_filtroVentana10
 .global asm_downsampleM
 
+
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
 @   void asm_svc (void)
@@ -185,43 +186,72 @@
 
 		/* Hago un push de los registro de r4 a r5 */
 		push {r4,r5}
-		/* Muevo al registro r4 el valor del registro r1=longitud del vector  */
 		mov r4, r1
 		subs r4, 1 // voy restando hasta llegar a recorrer el vector
 		mov r3,2
-		mul r4, r3  // Al ser uint16_t multiplico x 2
-		/* Apunto el R2 al final del vector */
+		mul r4, r3
 		mov r2, r0
 		add r2, r4
-		/* Le resto 2 a la cantidad de combinaciones a iterar
-		 * Para 3 elementos: 1 iteracion
-		 * Para 4 elementos: 2 iteraciones
-		 * Para N elementos: N - 2 iteraciones
-		 */
 		subs r1, 8
-
 	.asm_invertir_loop:
-		ldrh r4, [r2]	// Copio el valor del extremo derecho del vector
-		ldrh r5, [r0]	// Copio el valor del extremo izquierdo del vector
-		/* Intercambio valores entre las puntas */
+		ldrh r4, [r2]
+		ldrh r5, [r0]
 		strh r5, [r2],-2
 		strh r4, [r0], 2
-
-		subs r1, 1	// Cuando llega a cero cambia el flag a 1
+		subs r1, 1	// voy restando hasta llegar a recorrer el vector
 		bne .asm_invertir_loop
-
 		pop {r4,r5}
-
  		bx lr
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@ void asm_filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
+@
+@ Parametros recibidos:
+@   r0: vector de entrada de uint16_t
+@   r1: vector de salida de uint16_t
+@   r2: longitud de los vectores
+@   r4: Acumulador
+@   r5: Para sumar los valores de vector
+@   r6: Contador de ventanas
+@
+.thumb_func
+    asm_filtroVentana10:
 
 
+		push {r4}        /* hago un push del registro r4*/
+		mov r4, 9
+		cmp	r2, r4
+		bls .asm_fin     /* Si no lo es termina la funcion */
+		push {r5,r6}
+		mov r6, 0        /* pongo a cero los registros r5, r6 */
+		mov r4, 0
+	.asm_filtroVentana10_loop1:
+		mov r5, 10
+	.asm_filtroVentana10_loop2:
+		ldrh r3, [r0], 2
+		add r4, r3
+        subs r5, 1	// Cuando llega a cero cambia el flag a 1
+		bne .asm_filtroVentana10_loop2
+		add r6, 1    // sume un ciclo de 10 items mas
+		mov r5, 10   // Restaruro el valor de 10 para dividir
+		udiv r4,r4,r5 // Hago la division
+		strh r4,[r1], 2 // guardo el resultado en el vector de salida
+		add r5, r6 /* Me fijo si puedo correr la ventana una unidad hacia la izquierda */
+		cmp	r5, r2  		// Comparo la longitud con 10 + 1 elemento
+		bls .asm_volver_r0  // Si tengo un elemento mas itero nuevamente, pero primero vuelvo el puntero R0 a el item 2
+		b .asm_fin			// Si no tengo otro, termino la funcion
+	.asm_volver_r0: /* Vuelvo el puntero R0 a R0[1], asi sumo a partir del R0[1] hasta  R0[11], y asi hasta la longitud del vector */
+		sub r0, 20
+		b .asm_filtroVentana10_loop1
+	.asm_fin:
+		pop {r4,r6}
+        bx lr
 
 
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
-
 @ int32_t asm_max(int32_t * vectorIn, uint32_t longitud);
 @
 @ Parametros recibidos:
@@ -234,8 +264,7 @@
 .thumb_func
     asm_max:
 
-		/* Hago un push de los registro de r4 */
-		push {r4}
+		push {r4}      /* Hago un push de los registro de r4 */
 		mov r4, 0
 		ldr r2, [r0], 4
 		subs R1, 1
@@ -244,24 +273,15 @@
 		cmp r3, r2
 		bhi .asm_max_update
 		b .asm_max_sigo
-
-	/* salvo la posicion y el maximo valor */
-	.asm_max_update:
+	.asm_max_update:   /* salvo la posicion y el maximo valor */
 		add r4, 1
 		mov r2, r3
-
-	/* Hago la diferencia para poder saber si ya recorrio el vectro */
-	.asm_max_sigo:
+	.asm_max_sigo:     /* Hago la diferencia para poder saber si ya recorrio el vectro */
 		subs r1, 1
 		bne .asm_max_loop
-
-	/* Copio la posicion del maximo al registro de salida */
-		mov r0,r4
-
+		mov r0,r4      /* Copio la posicion del maximo al registro de salida */
 		pop {r4}
-
         bx lr
-
 
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -273,12 +293,53 @@
 @   r0: vector de entrada de int32_t
 @   r1: vector de salida de int16_t
 @   r2: longitud del vector
+@   r4:
+@   r5:
+
+.thumb_func
+	asm_pack32to16:
+		push {r4,r5}
+	     .pack32to16_loop:
+	     ldr r4, [r0], 4       //guardo valor del vector en r4 e incremento el puntero.
+	     lsr r5, r4, 16        //corrimiento a la derecha 16 bits.
+		 strh r5, [r1], 2      //hago un store de media palabra
+		 subs r2, 1            //voy restando de a 1 a longitud para saber cuando llego a recorrer el vector
+    	 bne .pack32to16_loop  // loop
+		 pop {r4,r5}
+		 bx lr //loop
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@ void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N);
+@
+@ Parametros recibidos:
+@   r0: vector de entrada de int32_t
+@   r1: vector de salida de int32_t
+@ 	r2: longitud de los vectores uint32_t
+@ 	r3: N muestra a quitar uint32_t
+@
+@
 @
 
 .thumb_func
-    asm_pack32to16:
+    asm_downsampleM:
 
-	ldr r3, [r0], 4	//Salvo e incremento el puntero.
-	lsr r3, R3, 16	//Hago corrimiento a la derecha 16 bits
-	str r3, [r1], 2
-	bx lr
+		push {r4,r6} /* Hago un push de los registro */
+		mov r4, 0    /* Inicializacion de los registros pusheados */
+		mov r6, 0
+	.asm_downsampleM_repito: /* Comparo R4 con el numero de item a sacar */
+		cmp r4, r3
+		beq .asm_downsampleM_salto /* Si no toca sacar el item, lo guardo en vectorOut */
+		ldr r5, [r0], 4
+		str r5,[r1], 4
+		add r4, #1
+		b .asm_downsampleM_cuenta /* Si toca sacar el item, avanzo en el vectorIn y no lo copio al vectorOut, reseteo R4 para contar nuevamente hasta N */
+	.asm_downsampleM_salto:
+		ldr r5, [r0], 4
+		mov r4, 0
+	.asm_downsampleM_cuenta:   /* avanzo en el vectorIn - Su contador */
+		add r6, 1
+		cmp R2, R6
+		bne .asm_downsampleM_repito
+		pop {r4,r6}
+ 		bx lr
