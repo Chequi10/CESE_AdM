@@ -260,8 +260,8 @@
 .thumb_func
     asm_max:
 
-		push {r4}      /* Hago un push de los registro de r4 */
-		mov r4, 0
+		push {r4}             // Hago un push de los registro de r4
+		mov r4, 0             // inicializo r4 con cero
 		ldr r2, [r0], 4
 		subs R1, 1
 	.asm_max_loop:
@@ -269,13 +269,13 @@
 		cmp r3, r2
 		bhi .asm_max_update
 		b .asm_max_sigo
-	.asm_max_update:   /* salvo la posicion y el maximo valor */
+	.asm_max_update:          // salvo la posicion y el maximo valor
 		add r4, 1
 		mov r2, r3
-	.asm_max_sigo:     /* Hago la diferencia para poder saber si ya recorrio el vectro */
-		subs r1, 1
+	.asm_max_sigo:
+		subs r1, 1            //para saber si ya termino el vector
 		bne .asm_max_loop
-		mov r0,r4      /* Copio la posicion del maximo al registro de salida */
+		mov r0,r4             //guardo en el r0 el indice del maximo valor
 		pop {r4}
         bx lr
 
@@ -299,7 +299,7 @@
 	     ldr r4, [r0], 4       //guardo valor del vector en r4 e incremento el puntero.
 	     lsr r5, r4, 16        //corrimiento a la derecha 16 bits.
 		 strh r5, [r1], 2      //hago un store de media palabra
-		 subs r2, 1            //voy restando de a 1 a longitud para saber cuando llego a recorrer el vector
+		 subs r2, 1            //para saber si ya termino el vector
     	 bne .pack32to16_loop  // loop
 		 pop {r4,r5}
 		 bx lr //loop
@@ -320,22 +320,22 @@
 .thumb_func
     asm_downsampleM:
 
-		push {r4,r6} /* Hago un push de los registro */
-		mov r4, 0    /* Inicializacion de los registros pusheados */
+		push {r4,r6}                  // Hago un push de los registro
+		mov r4, 0                     // Inicializacion de los registros pusheados
 		mov r6, 0
-	.asm_downsampleM_repito: /* Comparo R4 con el numero de item a sacar */
+	.asm_downsampleM_itero:          // Comparo r4 con el numero de muestra
 		cmp r4, r3
-		beq .asm_downsampleM_salto /* Si no toca sacar el item, lo guardo en vectorOut */
+		beq .asm_downsampleM_salto    // Si no toca sacar muestra, lo guardo en vectro de salida
 		ldr r5, [r0], 4
 		str r5,[r1], 4
-		add r4, #1
-		b .asm_downsampleM_cuenta /* Si toca sacar el item, avanzo en el vectorIn y no lo copio al vectorOut, reseteo R4 para contar nuevamente hasta N */
+		add r4, 1
+		b .asm_downsampleM_cuenta
 	.asm_downsampleM_salto:
 		ldr r5, [r0], 4
 		mov r4, 0
-	.asm_downsampleM_cuenta:   /* avanzo en el vectorIn - Su contador */
+	.asm_downsampleM_cuenta:
 		add r6, 1
-		cmp R2, R6
-		bne .asm_downsampleM_repito
+		cmp r2, r6
+		bne .asm_downsampleM_itero
 		pop {r4,r6}
  		bx lr
