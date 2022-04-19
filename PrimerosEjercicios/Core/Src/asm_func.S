@@ -215,33 +215,33 @@
     asm_filtroVentana10:
 
 
-		push {r4}        /* hago un push del registro r4*/
+		push {r4}           //hago un push del registro r4
 		mov r4, 9
 		cmp	r2, r4
-		bls .asm_fin     /* Finaliza o no la funcion */
+		bls .asm_fin        // Finaliza o no la funcion
 		push {r5,r6}
-		mov r6, 0        /* pongo a cero los registros r5, r6 */
+		mov r6, 0           // pongo a cero los registros r5, r6
 		mov r4, 0
 	.asm_filtroVentana10_loop1:
 		mov r5, 10
 	.asm_filtroVentana10_loop2:
 		ldrh r3, [r0], 2
 		add r4, r3
-        subs r5, 1	// Cuando llega a cero cambia el flag a 1
+        subs r5, 1	        // Cuando llega a cero cambia el flag a 1
 		bne .asm_filtroVentana10_loop2
 		add r6, 1
-		mov r5, 10
-		udiv r4,r4,r5 //division
+		mov r5, 10          //muevo el valor de 10 al registro r5
+		udiv r4,r4,r5       //hago la division
 		strh r4,[r1], 2
 		add r5, r6
-		cmp	r5, r2
+		cmp	r5, r2         //comparo si r5 es mayor a r2
 		bls .asm_volver_r0
 		b .asm_fin
 	.asm_volver_r0:
 		sub r0, 20
 		b .asm_filtroVentana10_loop1
 	.asm_fin:
-		pop {r4,r6}
+		pop {r4,r6}       //hago pop de los registros r4 y r6
         bx lr
 
 
@@ -263,20 +263,20 @@
 		push {r4}             // Hago un push de los registro de r4
 		mov r4, 0             // inicializo r4 con cero
 		ldr r2, [r0], 4
-		subs R1, 1
+		subs r1, 1            // hago la resta para saber si recorrio el vector
 	.asm_max_loop:
 		ldr r3, [r0], 4
-		cmp r3, r2
+		cmp r3, r2           //compara r3 es mayor que r2
 		bhi .asm_max_update
 		b .asm_max_sigo
 	.asm_max_update:          // salvo la posicion y el maximo valor
 		add r4, 1
-		mov r2, r3
+		mov r2, r3            //muevo el registro r3 a r2
 	.asm_max_sigo:
 		subs r1, 1            //para saber si ya termino el vector
 		bne .asm_max_loop
 		mov r0,r4             //guardo en el r0 el indice del maximo valor
-		pop {r4}
+		pop {r4}              //hgao pop del regsitro r4
         bx lr
 
 
